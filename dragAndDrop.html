@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Drag and Drop</title>
+	<style type="text/css">
+	#dragArea{width: 600px;height: 50px;border: 1px dotted #bdbdbd;background-color: #f7f7f7;padding: 5px;}
+	#list{width: 600px;}
+	#list img{float:left;max-width: 300px;height: auto;}
+	</style>
+</head>
+<body>
+	<div id="form">
+		<div id="dragArea" title="Arrastra imagenes en esta area.">
+			<input type="file" id="images" name="images[]" multiple="multiple">
+		</div>
+		<div id="list"></div>
+	</div>
+<script type="text/javascript">
+	// Referencia:
+	// http://www.html5rocks.com/es/tutorials/file/dndfiles/
+
+	var readFiles=function(){
+		var iFile=document.getElementById('images');
+		var imagenes=iFile.files;
+		//console.log(imagenes);
+		for(var i=0;i<imagenes.length;i++){
+			var currentImage=imagenes[i];
+			var reader=new FileReader(); // <= FileReader() : Leer archivos con JavaScript
+			// "closure" en funcion anonima autoejecutable
+			reader.onload=(function(currentFile){
+				return function(e){
+					//crear elemento para despues insertarlo en 'list'
+					var imagen=document.createElement('img');
+					imagen.src=e.target.result; //definir el origen de la imagen
+					imagen.title=currentFile.name;
+					document.getElementById('list').insertBefore(imagen,null);
+				}
+			})(currentImage);
+			reader.readAsDataURL(currentImage);
+		}
+	}
+	var dragDrop=function(e){
+		e.stopPropagation();
+		e.preventDefault();
+		var imagenes=e.dataTransfer.files;
+		console.log(imagenes);
+		for(var i=0;i<imagenes.length;i++){
+			var currentImage=imagenes[i];
+			var reader=new FileReader();
+			// "closure" en funcion anonima autoejecutable
+			reader.onload=(function(currentFile){
+				return function(e){
+					var imagen=document.createElement('img');
+					imagen.src=e.target.result;
+					imagen.title=currentFile.name;
+					document.getElementById('list').insertBefore(imagen,null);
+				}
+			})(currentImage);
+			reader.readAsDataURL(currentImage);
+		}
+	}
+
+	if(window.File && window.FileReader && window.FileList && window.Blob){
+		console.log('API soportada');
+		document.getElementById('images').addEventListener('change',readFiles,false);
+		document.getElementById('dragArea').addEventListener('drop',dragDrop,false);
+		//agregar 'dragover' para correcto funcionamiento en IE10
+		document.getElementById('dragArea').addEventListener('dragover',function(e){
+			e.stopPropagation();
+  			e.preventDefault();
+		},false);
+	}
+	else{
+		console.log('El navegador no soporta la API');
+	}
+</script>
+</body>
+</html>
