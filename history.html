@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>History API</title>
+	<style type="text/css">
+	.video{
+		float: left;
+		width: 500px;
+		height: 281px;
+		overflow: hidden;
+		border:4px solid #fff;
+		-webkit-box-shadow: 0px 0px 3px 1px #777;
+		box-shadow: 0px 0px 3px 1px #777;
+	}
+	.texto{
+		float: left;
+		width: 300px;
+	}
+	.imagen{
+		float: left;
+		overflow: hidden;
+		border:4px solid #fff;
+		-webkit-box-shadow: 0px 0px 3px 1px #777;
+		box-shadow: 0px 0px 3px 1px #777;
+	}
+	.imagen img{width: 100%;}
+	.contenedor{width: 400px;float: left;margin-left: 10px;}
+	.contenedor a{
+		text-decoration: none;
+		background-color: #FCDD30;
+		color: #222;
+		padding: 3px 7px;
+		border:1px solid #FCCA1F;
+	}
+	.contenedor .resp{
+		overflow: hidden;
+		padding: 5px;
+	}
+	</style>
+	<script type="text/javascript">
+	var nm,ld;
+	window.onload = function(){
+		//code
+		nm=document.getElementById('nm');
+		ld=document.getElementById('ld');
+		nm.addEventListener("click",function(event){
+			console.log(this.href);
+			getData(this.href);
+			history.pushState(null, null, this.href)
+			event.preventDefault();
+		},false);
+		ld.addEventListener("click",function(event){
+			console.log(this.href);
+			getData(this.href);
+			history.pushState(null, null, this.href)
+			event.preventDefault();
+		},false);
+	}
+	function getData(url){
+		console.log(url);
+		var req=new XMLHttpRequest();
+		req.open("GET",url,false);
+		req.send(null);
+		//recibido
+		if (req.status == 200) {
+			document.getElementById("resp").innerHTML = req.responseText;
+			return true;
+		}
+	}
+	</script>
+</head>
+<body>
+	<h3>History API</h3>
+	<div class="texto">
+		Sal con alguien que se gasta todo su dinero en libros y no en ropa, y que tiene problemas de espacio en el clóset porque ha comprado demasiados. Invita a salir a una chica que tiene una lista de libros por leer y que desde los doce años ha tenido una tarjeta de suscripción a una biblioteca.
+	</div>
+	<div class="video">
+		<iframe src="http://player.vimeo.com/video/51112540?byline=0&amp;color=f0c800" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+	</div>
+	<div class="contenedor">
+		<a href="http://localhost/html5/historyFiles/imagen.html" id="nm">NM</a>
+		<a href="http://localhost/html5/historyFiles/imagen2.html" id="ld">LD</a><br><br>
+		<div id="resp"></div>
+	</div>
+</body>
+</html>

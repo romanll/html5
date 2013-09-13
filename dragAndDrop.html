@@ -5,18 +5,30 @@
 	<title>Drag and Drop</title>
 	<style type="text/css">
 	#dragArea{width: 600px;height: 50px;border: 1px dotted #bdbdbd;background-color: #f7f7f7;padding: 5px;margin-bottom: 5px;}
-	#list{width: 100%;overflow: hidden;}
+	#list{
+		width: 100%;
+		position: relative;
+		overflow: hidden;
+		height: 100%;
+		}
 	#list div{
-		max-width: 25%;
 		position: relative;
 		overflow: hidden;
 		float: left;
+		width: 25%;
+		height: 200px;
 	}
 	#list div span{
 		position: absolute;
 		left: 5px;
 	}
-	#list div img{width:100%;height: auto;}
+	#list div img{
+		width: 130%;
+		height: auto;
+		left: -15%;
+		position: absolute;
+		top: -5%;
+	}
 	#senD{border:1px solid #333;background-color: #444;color:#fff;padding:5px 10px;}
 	</style>
 </head>
@@ -39,7 +51,7 @@
 		//console.log(imagenes);
 		for(var i=0;i<imagenes.length;i++){
 			var currentImage=imagenes[i];
-			console.log(currentImage);
+			//console.log(currentImage);
 			readFile(currentImage);
 		}
 	}
@@ -49,9 +61,9 @@
 		e.stopPropagation();
 		e.preventDefault();
 		var imagenes=e.dataTransfer.files; // <= en 'drag and drop' la info se encuentra en dataTransfer
-		console.log(imagenes);
+		//console.log(imagenes);
 		for(var i=0;i<imagenes.length;i++){
-			var currentImage=imagenes[i];
+			var currentImage=imagenes[i];			
 			readFile(currentImage);
 		}
 	}
@@ -61,25 +73,26 @@
 		var reader=new FileReader();
 		//crear array de objetos, con un identificador de imagen para cuando querramos eliminarla
 		var idDiv=createId();
-		listFiles[idDiv]=file;
-		// "closure" en funcion anonima autoejecutable
-		reader.onload=(function(currentFile){
-			return function(e){
-				//crear elemento para despues insertarlo en 'list'
-				var divImg=document.createElement('div');
-				divImg.id=idDiv;
-				var imagen=document.createElement('img');
-				imagen.src=e.target.result; //definir el origen de la imagen
-				imagen.title=currentFile.name;
-				document.getElementById('list').insertBefore(divImg,null);
-				divImg.insertBefore(imagen,null);
-				//pruebas
-				var spanX=document.createElement('span');
-				spanX.innerHTML='X';
-				divImg.insertBefore(spanX,null);
-				spanX.addEventListener('click',function(){removeDiv(idDiv);},false);
-			}
-		})(file);
+		
+		reader.onload = function (e) {
+			var divImg=document.createElement('div');
+			divImg.id=idDiv;
+			var imagen=document.createElement('img');
+			imagen.src=e.target.result; //definir el origen de la imagen
+			imagen.title=file.name;
+			document.getElementById('list').insertBefore(divImg,null);
+			divImg.insertBefore(imagen,null);
+			//pruebas
+			var spanX=document.createElement('span');
+			spanX.innerHTML='X';
+			divImg.insertBefore(spanX,null);
+			spanX.addEventListener('click',function(){removeDiv(idDiv);},false);
+			
+			/* agregarlo a la lista de archivos */
+			listFiles[idDiv]=file;
+		};
+	      
+		// leer la imagen
 		reader.readAsDataURL(file);
 	}
 
